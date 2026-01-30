@@ -1,9 +1,13 @@
 package com.rajat.limiter.ratelimit.controller;
 
+import com.rajat.limiter.ratelimit.model.RateLimitAlgorithm;
 import com.rajat.limiter.ratelimit.model.RateLimitRequest;
 import com.rajat.limiter.ratelimit.model.RateLimitResponse;
 import com.rajat.limiter.ratelimit.service.RateLimiterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/ratelimit")
@@ -16,7 +20,13 @@ public class RateLimitControllerV1 {
     }
 
     @PostMapping("/check")
-    public RateLimitResponse check(@RequestBody RateLimitRequest request) {
+    public RateLimitResponse check(@RequestBody RateLimitRequest request){
         return service.check(request);
     }
+
+    @GetMapping("/test")
+    public String test(){
+        return "Working....";
+    }
+
 }
