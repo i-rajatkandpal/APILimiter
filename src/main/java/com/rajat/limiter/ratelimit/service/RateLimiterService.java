@@ -2,6 +2,7 @@ package com.rajat.limiter.ratelimit.service;
 
 import com.rajat.limiter.ratelimit.algorithm.FixedWindowRateLimiter;
 import com.rajat.limiter.ratelimit.algorithm.RateLimiter;
+import com.rajat.limiter.ratelimit.algorithm.TokenBucketRateLimiter;
 import com.rajat.limiter.ratelimit.model.RateLimitAlgorithm;
 import com.rajat.limiter.ratelimit.model.RateLimitRequest;
 import com.rajat.limiter.ratelimit.model.RateLimitResponse;
@@ -14,9 +15,11 @@ public class RateLimiterService {
 
     private final Map<RateLimitAlgorithm, RateLimiter> limiters;
 
-    public RateLimiterService(FixedWindowRateLimiter fixedWindowRateLimiter) {
+    public RateLimiterService(FixedWindowRateLimiter fixedWindowRateLimiter,
+                              TokenBucketRateLimiter tokenBucketRateLimiter) {
         this.limiters = Map.of(
-                RateLimitAlgorithm.FIXED_WINDOW, fixedWindowRateLimiter
+                RateLimitAlgorithm.FIXED_WINDOW, fixedWindowRateLimiter,
+                RateLimitAlgorithm.TOKEN_BUCKET, tokenBucketRateLimiter
         );
     }
 
