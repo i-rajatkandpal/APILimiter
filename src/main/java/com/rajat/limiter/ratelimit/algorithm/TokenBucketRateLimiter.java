@@ -18,8 +18,8 @@ public class TokenBucketRateLimiter implements RateLimiter {
     public RateLimitResponse allow(String key, int limit, int windowSeconds){
 
         //everyUser gets two attributes 1) number of tokens 2) last refill time
-        String tokensKey = "rate:token:" + key + "tokens";
-        String lastRefillKey = "rate:token" + key + "tokens";
+        String tokensKey = "rate:token:" + key + ":tokens";
+        String lastRefillKey = "rate:token:" + key + ":lastRefill";
 
         long now = System.currentTimeMillis();
 
