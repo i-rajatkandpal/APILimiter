@@ -11,6 +11,8 @@ services:
       POSTGRES_DB: limiter_db
       POSTGRES_USER: limiter_user
       POSTGRES_PASSWORD: limiter_pass
+      TZ: Asia/Kolkata
+      PGTZ: Asia/Kolkata
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

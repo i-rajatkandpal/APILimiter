@@ -63,7 +63,8 @@ public class GatewayController {
 
         HttpHeaders headers = new HttpHeaders();
         request.getHeaderNames().asIterator().forEachRemaining(headerName -> {
-            if (!headerName.equalsIgnoreCase("X-API-Key")) {
+            if (!headerName.equalsIgnoreCase("X-API-Key")
+            && !headerName.equalsIgnoreCase("Accept-Encoding")) {
                 headers.add(headerName, request.getHeader(headerName));
             }
         });

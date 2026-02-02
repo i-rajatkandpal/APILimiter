@@ -1,30 +1,52 @@
 package com.rajat.limiter.gateway.service;
 
-import com.rajat.limiter.ratelimit.model.RateLimitAlgorithm;
+import com.rajat.limiter.Entity.ApiKeyEntity;
+import com.rajat.limiter.Entity.PlanEntity;
+import com.rajat.limiter.Repositories.ApiKeyRepository;
+import com.rajat.limiter.Repositories.PlanRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ApiKeyService {
-    private final Map<String, String> apiKeys = new HashMap<>();
-    private final Map<String, PlanConfig> planConfigs = new HashMap<>();
+    private final ApiKeyRepository apiKeyRepository;
+    private final PlanRepository planRepository;
 
-    public ApiKeyService(){
-        apiKeys.put("api-8148892552", "https://rajat-kandpal.com/data");
-        planConfigs.put("api-8148892552", new PlanConfig(10,60, RateLimitAlgorithm.TOKEN_BUCKET));
+    public ApiKeyService(ApiKeyRepository apiKeyRepository, PlanRepository planRepository) {
+        this.apiKeyRepository = apiKeyRepository;
+        this.planRepository = planRepository;
     }
 
     public boolean isValid(String apiKey){
-        return apiKeys.containsKey(apiKey);
+        Optional<ApiKeyEntity> temp = apiKeyRepository.findByApiKey(apiKey);
+
+        if(temp.isEmpty()) return false;
+
+        ApiKeyEntity key = temp.get();
+        return key.isEnabled();
     }
+
     public String getTargetUrl(String apiKey){
-        return apiKeys.get(apiKey);
-    }
-    public PlanConfig getPlanConfig(String apiKey){
-        return planConfigs.get(apiKey);
-    }
+        Optional<ApiKeyEntity> temp = apiKeyRepository.findByApiKey(apiKey);
 
+        if(temp.isEmpty()) throw new RuntimeException("Invalid API key");
 
+        ApiKeyEntity key = temp.get();
+
+        return key.getTargetUrl();
+    }
+    public PlanConfig getPlanConfig(String apiKey) {
+        ApiKeyEntity key = apiKeyRepository.findByApiKey(apiKey)
+                .orElseThrow(() -> new RuntimeException("Invalid API key"));
+
+        PlanEntity plan = planRepository.findById(key.getPlanName())
+                .orElseThrow(() -> new RuntimeException("Plan not found"));
+
+        return new PlanConfig(
+                plan.getRateLimit(),
+                plan.getWindowSeconds(),
+                plan.getAlgorithm()
+        );
+    }
 }
