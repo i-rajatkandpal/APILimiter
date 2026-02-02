@@ -20,36 +20,4 @@ public class PlanEntity {
     @Enumerated(EnumType.STRING)
     private RateLimitAlgorithm algorithm;
 
-
-    public String getPlanName() {
-        return planName;
-    }
-
-    public void setPlanName(String planName) {
-        this.planName = planName;
-    }
-
-    public int getRateLimit() {
-        return rateLimit;
-    }
-
-    public void setRateLimit(int rateLimit) {
-        this.rateLimit = rateLimit;
-    }
-
-    public int getWindowSeconds() {
-        return windowSeconds;
-    }
-
-    public void setWindowSeconds(int windowSeconds) {
-        this.windowSeconds = windowSeconds;
-    }
-
-    public RateLimitAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(RateLimitAlgorithm algorithm) {
-        this.algorithm = algorithm;
-    }
 }

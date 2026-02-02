@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ApiKeyRepository
-        extends JpaRepository<ApiKeyEntity, Long> {
+public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, Long> {
 
     Optional<ApiKeyEntity> findByApiKey(String apiKey);
 }

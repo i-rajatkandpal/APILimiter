@@ -6,28 +6,20 @@ import lombok.Data;
 import java.time.Instant;
 
 @Entity
+@Table(name = "users")
 @Data
-@Table(name = "api_keys")
-
-
-public class ApiKeyEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String apiKey;
+    private String email;
 
     @Column(nullable = false)
-    private String targetUrl;
-
-    @Column(nullable = false)
-    private String planName;
-
-    private boolean enabled = true;
+    private String password;
 
     private Instant createdAt = Instant.now();
-
 
 }

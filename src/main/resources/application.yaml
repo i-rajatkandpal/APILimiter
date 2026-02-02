@@ -27,3 +27,7 @@ logging:
     root: INFO
     com.rajat.limiter: DEBUG
     org.springframework.web: DEBUG
+
+jwt:
+  secret: ed96fbff085b798ec40cbd01ca632adc37c70d3d35fdf92d3a9fdd3dfe04007b
+  expiration-ms: 86400000
