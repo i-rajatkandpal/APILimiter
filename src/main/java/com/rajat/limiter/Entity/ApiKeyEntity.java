@@ -16,6 +16,9 @@ public class ApiKeyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @Column(unique = true, nullable = false)
     private String apiKey;
 
