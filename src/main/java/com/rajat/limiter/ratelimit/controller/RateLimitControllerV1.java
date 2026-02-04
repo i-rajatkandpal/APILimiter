@@ -1,13 +1,9 @@
 package com.rajat.limiter.ratelimit.controller;
 
-import com.rajat.limiter.ratelimit.model.RateLimitAlgorithm;
 import com.rajat.limiter.ratelimit.model.RateLimitRequest;
 import com.rajat.limiter.ratelimit.model.RateLimitResponse;
 import com.rajat.limiter.ratelimit.service.RateLimiterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/ratelimit")

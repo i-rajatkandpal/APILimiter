@@ -10,8 +10,6 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.parser.Entity;
-
 @RestController
 @RequestMapping("/gateway")
 public class GatewayController {

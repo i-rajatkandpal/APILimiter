@@ -24,7 +24,6 @@ public class TokenBucketRateLimiter implements RateLimiter {
         long now = System.currentTimeMillis();
 
         // getting current state of user from redis
-
         String tokenStr = redisTemplate.opsForValue().get(tokensKey);
         String lastRefillStr = redisTemplate.opsForValue().get(lastRefillKey);
 
