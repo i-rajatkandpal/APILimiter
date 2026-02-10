@@ -4,6 +4,8 @@ import com.rajat.limiter.Entity.ApiKeyEntity;
 import com.rajat.limiter.Entity.PlanEntity;
 import com.rajat.limiter.Repositories.ApiKeyRepository;
 import com.rajat.limiter.Repositories.PlanRepository;
+import com.rajat.limiter.common.exception.InvalidApiKeyException;
+import com.rajat.limiter.common.exception.PlanNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,35 +20,37 @@ public class ApiKeyService {
         this.planRepository = planRepository;
     }
 
-    public boolean isValid(String apiKey){
+    public boolean isValid(String apiKey) {
         Optional<ApiKeyEntity> temp = apiKeyRepository.findByApiKey(apiKey);
 
-        if(temp.isEmpty()) return false;
+        if (temp.isEmpty())
+            return false;
 
         ApiKeyEntity key = temp.get();
         return key.isEnabled();
     }
 
-    public String getTargetUrl(String apiKey){
+    public String getTargetUrl(String apiKey) {
         Optional<ApiKeyEntity> temp = apiKeyRepository.findByApiKey(apiKey);
 
-        if(temp.isEmpty()) throw new RuntimeException("Invalid API key");
+        if (temp.isEmpty())
+            throw new InvalidApiKeyException("Invalid API key");
 
         ApiKeyEntity key = temp.get();
 
         return key.getTargetUrl();
     }
+
     public PlanConfig getPlanConfig(String apiKey) {
         ApiKeyEntity key = apiKeyRepository.findByApiKey(apiKey)
-                .orElseThrow(() -> new RuntimeException("Invalid API key"));
+                .orElseThrow(() -> new InvalidApiKeyException("Invalid API key"));
 
         PlanEntity plan = planRepository.findById(key.getPlanName())
-                .orElseThrow(() -> new RuntimeException("Plan not found"));
+                .orElseThrow(() -> new PlanNotFoundException("Plan '" + key.getPlanName() + "' not found"));
 
         return new PlanConfig(
                 plan.getRateLimit(),
                 plan.getWindowSeconds(),
-                plan.getAlgorithm()
-        );
+                plan.getAlgorithm());
     }
 }

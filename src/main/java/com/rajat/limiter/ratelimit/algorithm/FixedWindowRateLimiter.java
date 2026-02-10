@@ -18,12 +18,15 @@ public class FixedWindowRateLimiter implements RateLimiter {
     @Override
     public RateLimitResponse allow(String key, int limit, int windowSeconds){
 
-        //this rounds-down to the start of the current 60-second window
-        long now = System.currentTimeMillis() / 1000;
-        long windowStart = (now / windowSeconds) * windowSeconds;
+        long nowMillis = System.currentTimeMillis();
+
+        // round down to the start of the current window (in seconds), then convert to millis.
+        long nowSeconds = nowMillis / 1000;
+        long windowStartSeconds = (nowSeconds / windowSeconds) * windowSeconds;
+        long windowStartMillis = windowStartSeconds * 1000L;
 
         // key can be IP, this is done so that different users get exclusive counters to limit api.
-        String redisKey = "rate:fixed:" + key + ":" + windowStart;
+        String redisKey = "rate:fixed:" + key + ":" + windowStartSeconds;
 
         // counts how many request can be made by a particular user
         Long count = redisTemplate.opsForValue().increment(redisKey);
@@ -36,7 +39,10 @@ public class FixedWindowRateLimiter implements RateLimiter {
         boolean allowed = count <= limit;
         long remaining = Math.max(0, limit - count);
 
-        return new RateLimitResponse(allowed, remaining, windowSeconds + windowStart);
+        long resetAtMillis = windowStartMillis + windowSeconds * 1000L;
+
+        // resetAt is the end of the current window
+        return new RateLimitResponse(allowed, remaining, resetAtMillis);
 
     }
 }

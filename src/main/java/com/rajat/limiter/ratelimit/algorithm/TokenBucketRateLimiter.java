@@ -21,6 +21,7 @@ public class TokenBucketRateLimiter implements RateLimiter {
         String tokensKey = "rate:token:" + key + ":tokens";
         String lastRefillKey = "rate:token:" + key + ":lastRefill";
 
+        // Use epoch milliseconds consistently for resetAt across all algorithms.
         long now = System.currentTimeMillis();
 
         // getting current state of user from redis
@@ -48,7 +49,10 @@ public class TokenBucketRateLimiter implements RateLimiter {
         redisTemplate.expire(lastRefillKey, Duration.ofSeconds(windowSeconds * 2L));
 
         long remaining = (long) tokens;
-        long resetAt = (long) (now + ((limit - tokens) / refillRate * 1000));
+        long millisUntilFull = limit > tokens
+                ? (long) (((limit - tokens) / refillRate) * 1000)
+                : 0L;
+        long resetAt = now + millisUntilFull;
 
         return new RateLimitResponse(allowed, remaining, resetAt);
 

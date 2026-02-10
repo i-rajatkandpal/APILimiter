@@ -28,6 +28,9 @@ public class RateLimiterService {
 
     public RateLimitResponse check(RateLimitRequest request) {
         RateLimiter limiter = limiters.get(request.getAlgorithm());
+        if (limiter == null) {
+            throw new IllegalArgumentException("Unsupported rate limit algorithm: " + request.getAlgorithm());
+        }
         return limiter.allow(
                 request.getKey(),
                 request.getLimit(),

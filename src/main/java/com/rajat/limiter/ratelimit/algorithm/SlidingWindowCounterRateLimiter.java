@@ -16,9 +16,12 @@ public class SlidingWindowCounterRateLimiter implements RateLimiter{
 
     @Override
     public RateLimitResponse allow(String key, int limit, int windowSeconds) {
-        long now = System.currentTimeMillis() / 1000;
-        long currentWindow = now / windowSeconds; // identifies which time window we are currently in
-        long previousWindow = currentWindow - 1; // immediate previous window
+
+        long nowMillis = System.currentTimeMillis();
+        long nowSeconds = nowMillis / 1000;
+
+        long currentWindow = nowSeconds / windowSeconds;
+        long previousWindow = currentWindow - 1;
 
         String currentKey = "rate:sliding:" + key + ":" + currentWindow;
         String previousKey = "rate:sliding:" + key + ":" + previousWindow;
@@ -30,7 +33,10 @@ public class SlidingWindowCounterRateLimiter implements RateLimiter{
         long previousCount = prevStr != null ? Long.parseLong(prevStr) : 0;
 
         // how far we are into the current window (0.0 → 1.0)
-        double timeIntoWindow = (now % windowSeconds) / (double) windowSeconds;
+        double timeIntoWindow = (nowSeconds % windowSeconds) / (double) windowSeconds;
+
+        // [0.0, 1.0]
+        timeIntoWindow = Math.max(0.0, Math.min(1.0, timeIntoWindow));
 
         // previous window traffic fades as time moves forward
         double estimatedCount = (previousCount * (1 - timeIntoWindow)) + currentCount;
@@ -38,7 +44,10 @@ public class SlidingWindowCounterRateLimiter implements RateLimiter{
         boolean allowed = estimatedCount <= limit;
         long remaining = (long) Math.max(0, limit - estimatedCount);
 
-        return new RateLimitResponse(allowed, remaining, (currentWindow + 1) * windowSeconds);
+        long windowEndSeconds = (currentWindow + 1) * windowSeconds;
+        long resetAtMillis = windowEndSeconds * 1000L;
+
+        return new RateLimitResponse(allowed, remaining, resetAtMillis);
 
 
     }

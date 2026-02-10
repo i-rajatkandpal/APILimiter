@@ -1,7 +1,5 @@
 package com.rajat.limiter.ratelimit.model;
 
-import lombok.Data;
-
 public class RateLimitRequest {
     private String key;
     private RateLimitAlgorithm algorithm;
