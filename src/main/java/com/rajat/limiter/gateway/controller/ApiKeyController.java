@@ -78,7 +78,7 @@ public class ApiKeyController {
         ApiKeyEntity key = apiKeyRepository.findById(id).orElse(null);
 
         // Security Check: Key exists AND belongs to this user
-        if (key == null || !key.getUserId().equals(currentUser.getId())) {
+        if (key == null || !key.getUserId().equals(Long.valueOf(currentUser.getId()))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("message", "key not found or unauthorized"));
         }
@@ -96,7 +96,7 @@ public class ApiKeyController {
                 .orElse(null);
 
         // Security Check: Key exists AND belongs to this user
-        if (key == null || !key.getUserId().equals(currentUser.getId())) {
+        if (key == null || !key.getUserId().equals(Long.valueOf(currentUser.getId()))) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(Map.of("message", "Key not found or unauthorized"));
@@ -106,6 +106,44 @@ public class ApiKeyController {
         apiKeyRepository.save(key);
 
         return ResponseEntity.ok(Map.of("message", "Key disabled"));
+    }
+
+    @PatchMapping("/{id}/enable")
+    public ResponseEntity<?> enableKey(@PathVariable Long id) {
+        UserEntity currentUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        ApiKeyEntity key = apiKeyRepository.findById(id).orElse(null);
+
+        if (key == null || !key.getUserId().equals(Long.valueOf(currentUser.getId()))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Key not found or unauthorized"));
+        }
+
+        key.setEnabled(true);
+        apiKeyRepository.save(key);
+
+        return ResponseEntity.ok(Map.of("message", "Key enabled"));
+    }
+
+    @PostMapping("/{id}/rotate")
+    public ResponseEntity<?> rotateKey(@PathVariable Long id) {
+        UserEntity currentUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        ApiKeyEntity key = apiKeyRepository.findById(id).orElse(null);
+
+        if (key == null || !key.getUserId().equals(Long.valueOf(currentUser.getId()))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "Key not found or unauthorized"));
+        }
+
+        String newApiKey = "api_k" + UUID.randomUUID().toString().replace("-", "");
+        key.setApiKey(newApiKey);
+        key.setEnabled(true);
+        apiKeyRepository.save(key);
+
+        return ResponseEntity.ok(Map.of(
+                "apiKey", newApiKey,
+                "message", "Key rotated. Save this new key! It won't be shown again."));
     }
 
     private String maskKey(String key) {
