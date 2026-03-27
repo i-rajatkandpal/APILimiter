@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class RateLimiterService {
+public class  RateLimiterService {
 
     private final Map<RateLimitAlgorithm, RateLimiter> limiters;
 
