@@ -1,8 +1,20 @@
-HELP.md
+### Java / Maven ###
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+### Maven Wrapper ###
+.mvn/wrapper/maven-wrapper.jar
+
+### Spring Boot ###
+HELP.md
 
 ### STS ###
 .apt_generated
@@ -14,10 +26,14 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
+
+### VS Code ###
+.vscode/
 
 ### NetBeans ###
 /nbproject/private/
@@ -29,9 +45,26 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+### Node / Frontend ###
+node_modules/
+dist/
+dist-ssr/
+*.local
 
-src/main/java/com/rajat/limiter/config/SecurityConfig.java
+### OS Files ###
+.DS_Store
+Thumbs.db
+desktop.ini
 
+### Debug / Log Files ###
+*.log
+*_log.txt
+*_log_*.txt
+compile_error*.txt
+diag_log.txt
+backend_log*.txt
 
+### Misc ###
+*.swp
+*.swo
+*~
